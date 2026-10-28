@@ -78,14 +78,11 @@ export default function Listings() {
         {/* Section Header */}
         <div className="text-center mb-16 flex flex-col items-center">
           <span className="text-sm md:text-base font-bold text-[var(--blue)] mb-2 tracking-wide">
-            العروض العقارية
+            طرابلس والجوار{" "}
           </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
             نقدم لك مجموعة من أبرز عقاراتنا
           </h2>
-          <p className="text-gray-500 text-base md:text-lg max-w-2xl mx-auto">
-            مجموعة مختارة من أحدث وأبرز العقارات المتاحة لدينا في طرابلس والجوار
-          </p>
         </div>
 
         {/* Listings Grid */}
@@ -116,36 +113,36 @@ export default function Listings() {
               {/* Card Content Stack */}
               <div className="flex flex-col px-2 flex-grow">
                 {/* Title */}
-                <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-[var(--blue)] transition-colors duration-300">
+                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[var(--blue)] transition-colors duration-300">
                   {p.title}
                 </h3>
 
                 {/* Location */}
                 <div className="flex items-center gap-1 text-gray-700 mb-3">
-                  <IoLocationOutline className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-[15px] font-regular">{p.location}</span>
+                  <IoLocationOutline className="w-4 h-4 flex-shrink-0" />
+                  <span className="text-[13px] font-regular">{p.location}</span>
                 </div>
 
                 {/* Features (Area, Beds, Baths) */}
                 <div className="flex flex-wrap items-center gap-5 text-gray-700 mb-6">
                   <div className="flex items-center gap-1.5">
-                    <BiArea className="w-[18px] h-[18px] flex-shrink-0" />
-                    <span className="text-[15px] font-regular">
+                    <BiArea className="w-[16px] h-[16px] flex-shrink-0" />
+                    <span className="text-[13px] font-regular">
                       {p.area} م²
                     </span>
                   </div>
                   {p.rooms > 0 && (
                     <div className="flex items-center gap-1.5">
-                      <IoBedOutline className="w-[18px] h-[18px] flex-shrink-0" />
-                      <span className="text-[15px] font-regular">
+                      <IoBedOutline className="w-[16px] h-[16px] flex-shrink-0" />
+                      <span className="text-[13px] font-regular">
                         {p.rooms} غرف
                       </span>
                     </div>
                   )}
                   {p.baths > 0 && (
                     <div className="flex items-center gap-1.5">
-                      <BiBath className="w-[18px] h-[18px] flex-shrink-0" />
-                      <span className="text-[15px] font-regular">
+                      <BiBath className="w-[16px] h-[16px] flex-shrink-0" />
+                      <span className="text-[13px] font-regular">
                         {p.baths} حمام
                       </span>
                     </div>
@@ -154,10 +151,10 @@ export default function Listings() {
 
                 {/* Price & Action Row */}
                 <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
-                  <div className="text-2xl font-bold text-gray-900 flex items-center gap-1.5 tracking-tight pt-3">
+                  <div className="text-xl font-medium text-gray-900 flex items-center gap-1.5 tracking-tight pt-3">
                     <span>{p.price}</span>
                     {!p.price.includes("شهر") && (
-                      <span className="text-lg font-bold">$</span>
+                      <span className="text-lg font-medium">$</span>
                     )}
                   </div>
 

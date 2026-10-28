@@ -1,6 +1,14 @@
 "use client";
-import { useState, useRef } from "react";
-import { FiChevronDown, FiSearch } from "react-icons/fi";
+import { useState } from "react";
+import {
+  FiChevronDown,
+  FiSearch,
+  FiX,
+  FiMenu,
+  FiMapPin,
+  FiHome,
+  FiDollarSign,
+} from "react-icons/fi";
 
 const NAV_LINKS = [
   { label: "من نحن", id: "about" },
@@ -32,12 +40,10 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
   const [tab, setTab] = useState<"بيع" | "إيجار">("إيجار");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Desktop
   const [city, setCity] = useState("");
   const [type, setType] = useState("");
   const [price, setPrice] = useState("");
 
-  // Mobile wizard
   const [step, setStep] = useState<Step>(null);
   const [mobileCity, setMobileCity] = useState("");
   const [mobileType, setMobileType] = useState("");
@@ -82,96 +88,337 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
 
   return (
     <>
-      <section id="hero" className="hero-section">
-        {/* Backgrounds */}
+      {/* ══ HERO SECTION ══ */}
+      <section
+        id="hero"
+        style={{
+          position: "relative",
+          height: "100vh",
+          minHeight: 600,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
+        {/* Desktop BG */}
         <div
-          className="hero-bg hero-bg-desktop"
-          style={{ backgroundImage: "url('/hero/desktop-hero-banner.jpg')" }}
+          className="hidden md:block"
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: "url('/hero/desktop-hero-banner.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            zIndex: 0,
+          }}
         />
+        {/* Mobile BG */}
         <div
-          className="hero-bg hero-bg-phone"
-          style={{ backgroundImage: "url('/hero/phone-hero-banner.jpg')" }}
+          className="block md:hidden"
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: "url('/hero/phone-hero-banner.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            zIndex: 0,
+          }}
         />
-        <div className="hero-overlay" />
+        {/* Overlay */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(20,35,50,0.22)",
+            zIndex: 1,
+          }}
+        />
+
         {/* ══ NAVBAR ══ */}
-        <nav className="hero-nav">
-          <div className="hero-nav-inner">
-            <div className="flex flex-col md:flex-row items-center justify-center md:gap-1">
-              <img
-                src="/logo-abtah.svg"
-                alt="Logo"
-                className="w-12 md:w-14 mt-1 md:mt-0"
-              />
-              <div>
-                <p className="hero-logo-text mt-[2px] md:mt-0 mb-[1px]">
-                  الأبطــــــح للعقـارات
-                </p>
-                <p className="hero-logo-sub">Abtah Real Estate</p>
-              </div>
-            </div>
-
-            <div className="hero-nav-links">
-              {NAV_LINKS.map((item) => (
-                <a key={item.id} href={`#${item.id}`} className="hero-nav-link">
-                  {item.label}
-                </a>
-              ))}
-            </div>
-
-            <button onClick={onPublish} className="hero-cta-btn">
-              نشر إعلان
-            </button>
-
-            <button
-              className="hero-hamburger"
-              onClick={() => setMenuOpen((o) => !o)}
-              aria-label="فتح القائمة"
+        <nav
+          style={{
+            position: "absolute" /* floats over the hero on ALL screen sizes */,
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 10,
+            width: "100%",
+          }}
+        >
+          {/*
+           * Desktop:  fully transparent (sits on top of hero image)
+           * Mobile:   white background
+           */}
+          <div
+            className="md:bg-transparent"
+            style={
+              {
+                /* applied only on mobile via inline; Tailwind class overrides on md+ */
+              }
+            }
+          >
+            {/* Inner row — white bg on mobile only */}
+            <div
+              className="bg-white md:bg-transparent"
+              style={{
+                maxWidth: 1280,
+                margin: "0 auto",
+                padding: "0 24px",
+                height: 68,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                direction: "rtl",
+              }}
             >
-              <span className="hero-hamburger-bar" />
-              <span className="hero-hamburger-bar" />
-              <span className="hero-hamburger-bar" />
-            </button>
-          </div>
+              {/* Logo */}
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <img
+                  src="/logo-abtah.svg"
+                  alt="Logo"
+                  style={{ width: 44, height: "auto" }}
+                />
+                <img
+                  src="/typo-logo.svg"
+                  alt="الأبطح للعقارات"
+                  className="hidden md:block h-7 md:h-9 object-contain"
+                />
+                <img
+                  src="/blue-typo-logo.svg"
+                  alt="الأبطح للعقارات"
+                  className="block md:hidden h-7 md:h-9 object-contain"
+                />
+              </div>
 
-          {menuOpen && (
-            <div className="hero-mobile-menu">
-              {NAV_LINKS.map((item) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className="hero-mobile-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {item.label}
-                </a>
-              ))}
-              <button onClick={onPublish} className="hero-cta-btn w-fit">
+              {/* Desktop links */}
+              <div
+                className="hidden md:flex"
+                style={{ gap: 36, alignItems: "center" }}
+              >
+                {NAV_LINKS.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    style={{
+                      color: "#ebebeb",
+                      fontSize: 17,
+                      fontWeight: 400,
+                      textDecoration: "none",
+                    }}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+
+              {/* Desktop CTA */}
+              <button
+                onClick={onPublish}
+                className="hidden md:inline-flex"
+                style={{
+                  background: "#1b5ebe",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 20,
+                  padding: "10px 24px",
+                  fontFamily: "ThmanyahSans, sans-serif",
+                  fontWeight: 500,
+                  fontSize: 16,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  alignItems: "center",
+                }}
+              >
                 نشر إعلان
               </button>
+
+              {/* Mobile hamburger — dark icon because bg is white */}
+              <button
+                className="flex md:hidden"
+                onClick={() => setMenuOpen((o) => !o)}
+                aria-label="فتح القائمة"
+                style={{
+                  background: "rgba(27,94,190,0.08)",
+                  border: "1.5px solid rgba(27,94,190,0.18)",
+                  borderRadius: 10,
+                  width: 42,
+                  height: 42,
+                  cursor: "pointer",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  gap: 5,
+                  padding: 0,
+                }}
+              >
+                {menuOpen ? (
+                  <FiX size={20} color="#1b5ebe" strokeWidth={2.2} />
+                ) : (
+                  <FiMenu size={20} color="#1b5ebe" strokeWidth={2.2} />
+                )}
+              </button>
             </div>
-          )}
+
+            {/* ── Mobile dropdown menu ── */}
+            {menuOpen && (
+              <div
+                className="md:hidden"
+                style={{
+                  background: "rgba(255,255,255,0.97)",
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                  borderTop: "1px solid rgba(27,94,190,0.08)",
+                  boxShadow: "0 12px 40px rgba(0,0,0,0.13)",
+                  borderRadius: "0 0 24px 24px",
+                  padding: "8px 16px 20px",
+                  direction: "rtl",
+                }}
+              >
+                {NAV_LINKS.map((item, i) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    onClick={() => setMenuOpen(false)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      width: "100%",
+                      padding: "13px 12px",
+                      fontSize: 15,
+                      fontWeight: 500,
+                      color: "#1a2a24",
+                      textDecoration: "none",
+                      borderBottom:
+                        i < NAV_LINKS.length - 1
+                          ? "1px solid rgba(0,0,0,0.05)"
+                          : "none",
+                      borderRadius: 12,
+                      transition: "background 0.15s",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.background =
+                        "rgba(27,94,190,0.06)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.background = "transparent")
+                    }
+                  >
+                    {item.label}
+                  </a>
+                ))}
+
+                {/* Divider */}
+                <div
+                  style={{
+                    height: 1,
+                    background: "rgba(0,0,0,0.07)",
+                    margin: "10px 0 14px",
+                  }}
+                />
+
+                <button
+                  onClick={() => {
+                    onPublish();
+                    setMenuOpen(false);
+                  }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    background: "#1b5ebe",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 20,
+                    padding: "13px 24px",
+                    fontFamily: "ThmanyahSans, sans-serif",
+                    fontWeight: 600,
+                    fontSize: 16,
+                    cursor: "pointer",
+                    textAlign: "center",
+                  }}
+                >
+                  نشر إعلان
+                </button>
+              </div>
+            )}
+          </div>
         </nav>
-        {/* ══ HERO BODY ══ */}ب
-        <div className="hero-body mt-8 md:mt-4">
-          <div className="hero-content">
-            <h1 className="hero-title">
+
+        {/* ══ HERO BODY ══ */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+            zIndex: 5,
+            padding: "0 24px",
+            direction: "rtl",
+            marginTop: 8,
+          }}
+          className="md:mt-4"
+        >
+          <div style={{ width: "100%", maxWidth: 860, textAlign: "center" }}>
+            <h1
+              style={{
+                color: "#fff",
+                fontSize: "clamp(2.2rem, 5vw, 4rem)",
+                fontWeight: 900,
+                lineHeight: 1.3,
+                marginBottom: 20,
+              }}
+            >
               نساعدك تشتري، تبيع،
               <br />
               تؤجر، وتدير عقارك
             </h1>
-            <p className="hero-subtitle">
+            <p
+              style={{
+                color: "rgba(255,255,255,0.75)",
+                fontSize: 17,
+                lineHeight: 1.75,
+                maxWidth: 560,
+                margin: "0 auto 40px",
+              }}
+            >
               حلول عقارية متكاملة وخيارات متنوعة تناسب احتياجك وتساعدك على اتخاذ
               القرار المناسب.
             </p>
 
             {/* Tabs */}
-            <div className="hero-tabs">
-              <div className="hero-tabs-pill">
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: 16,
+              }}
+            >
+              <div
+                style={{
+                  display: "inline-flex",
+                  background: "rgba(255,255,255,0.15)",
+                  borderRadius: 50,
+                  padding: 4,
+                  backdropFilter: "blur(8px)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                }}
+              >
                 {(["إيجار", "بيع"] as const).map((t) => (
                   <button
                     key={t}
                     onClick={() => setTab(t)}
-                    className={`hero-tab-btn${tab === t ? " active" : ""}`}
+                    style={{
+                      padding: "10px 40px",
+                      borderRadius: 50,
+                      border: "none",
+                      cursor: "pointer",
+                      fontFamily: "ThmanyahSans, sans-serif",
+                      fontWeight: 600,
+                      fontSize: 15,
+                      transition: "all 0.2s",
+                      background: tab === t ? "#fff" : "transparent",
+                      color: tab === t ? "#0e1f1a" : "rgba(255,255,255,0.85)",
+                    }}
                   >
                     {t}
                   </button>
@@ -179,21 +426,60 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
               </div>
             </div>
 
-            {/* ── DESKTOP SEARCH BAR (Large Capsule matching reference) ── */}
+            {/* ── DESKTOP SEARCH BAR ── */}
             <div
               dir="rtl"
-              className="hidden md:flex items-center justify-between bg-white rounded-full p-2.5 md:p-3 shadow-2xl max-w-4xl lg:max-w-8xl border border-gray-100 transition-all duration-300"
+              className="hidden md:flex"
+              style={{
+                alignItems: "center",
+                justifyContent: "space-between",
+                background: "#fff",
+                borderRadius: 9999,
+                padding: "10px 12px",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+                maxWidth: "100%",
+                border: "1px solid rgba(0,0,0,0.06)",
+              }}
             >
-              {/* Field 1: City */}
-              <div className="flex-1 px-6 py-1.5 flex flex-col justify-center relative cursor-pointer group text-right">
-                <span className="text-base font-regular text-gray-600 mb-0.5 block">
+              {/* City */}
+              <div
+                style={{
+                  flex: 1,
+                  padding: "6px 24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "right",
+                  position: "relative",
+                }}
+              >
+                <span
+                  style={{ fontSize: 13, color: "#6b7280", marginBottom: 2 }}
+                >
                   المدينة
                 </span>
-                <div className="relative flex items-center justify-between">
+                <div
+                  style={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <select
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full bg-transparent font-bold text-gray-900 text-base md:text-lg outline-none cursor-pointer appearance-none pl-6 pr-0 z-10"
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      fontWeight: 700,
+                      color: "#111827",
+                      fontSize: 17,
+                      outline: "none",
+                      cursor: "pointer",
+                      appearance: "none",
+                      paddingLeft: 24,
+                      border: "none",
+                      fontFamily: "ThmanyahSans, sans-serif",
+                    }}
                   >
                     <option value="">اختر المدينة</option>
                     {CITIES.map((c) => (
@@ -202,23 +488,66 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                       </option>
                     ))}
                   </select>
-                  <FiChevronDown className="w-5 h-5 text-gray-400 absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-[var(--blue)] transition-colors" />
+                  <FiChevronDown
+                    size={18}
+                    color="#9ca3af"
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      pointerEvents: "none",
+                    }}
+                  />
                 </div>
               </div>
 
-              {/* Vertical Divider */}
-              <div className="w-[1px] h-10 bg-gray-200/80 flex-shrink-0 my-auto" />
+              <div
+                style={{
+                  width: 1,
+                  height: 40,
+                  background: "#e5e7eb",
+                  flexShrink: 0,
+                }}
+              />
 
-              {/* Field 2: Property Type */}
-              <div className="flex-1 px-6 py-1.5 flex flex-col justify-center relative cursor-pointer group text-right">
-                <span className="text-base font-regular text-gray-600 mb-0.5 block">
+              {/* Property Type */}
+              <div
+                style={{
+                  flex: 1,
+                  padding: "6px 24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "right",
+                  position: "relative",
+                }}
+              >
+                <span
+                  style={{ fontSize: 13, color: "#6b7280", marginBottom: 2 }}
+                >
                   نوع العقار
                 </span>
-                <div className="relative flex items-center justify-between">
+                <div
+                  style={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                    className="w-full bg-transparent font-bold text-gray-900 text-base md:text-lg outline-none cursor-pointer appearance-none pl-6 pr-0 z-10"
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      fontWeight: 700,
+                      color: "#111827",
+                      fontSize: 17,
+                      outline: "none",
+                      cursor: "pointer",
+                      appearance: "none",
+                      paddingLeft: 24,
+                      border: "none",
+                      fontFamily: "ThmanyahSans, sans-serif",
+                    }}
                   >
                     <option value="">جميع الأنواع</option>
                     {PROP_TYPES.map((p) => (
@@ -227,23 +556,66 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                       </option>
                     ))}
                   </select>
-                  <FiChevronDown className="w-5 h-5 text-gray-400 absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-[var(--blue)] transition-colors" />
+                  <FiChevronDown
+                    size={18}
+                    color="#9ca3af"
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      pointerEvents: "none",
+                    }}
+                  />
                 </div>
               </div>
 
-              {/* Vertical Divider */}
-              <div className="w-[1px] h-10 bg-gray-200/80 flex-shrink-0 my-auto" />
+              <div
+                style={{
+                  width: 1,
+                  height: 40,
+                  background: "#e5e7eb",
+                  flexShrink: 0,
+                }}
+              />
 
-              {/* Field 3: Price */}
-              <div className="flex-1 px-6 py-1.5 flex flex-col justify-center relative cursor-pointer group text-right">
-                <span className="text-base font-regular text-gray-600 mb-0.5 block">
+              {/* Price */}
+              <div
+                style={{
+                  flex: 1,
+                  padding: "6px 24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "right",
+                  position: "relative",
+                }}
+              >
+                <span
+                  style={{ fontSize: 13, color: "#6b7280", marginBottom: 2 }}
+                >
                   السعر
                 </span>
-                <div className="relative flex items-center justify-between">
+                <div
+                  style={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <select
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    className="w-full bg-transparent font-bold text-gray-900 text-base md:text-lg outline-none cursor-pointer appearance-none pl-6 pr-0 z-10"
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      fontWeight: 700,
+                      color: "#111827",
+                      fontSize: 17,
+                      outline: "none",
+                      cursor: "pointer",
+                      appearance: "none",
+                      paddingLeft: 24,
+                      border: "none",
+                      fontFamily: "ThmanyahSans, sans-serif",
+                    }}
                   >
                     <option value="">بلا تحديد</option>
                     {PRICES.map((p) => (
@@ -252,30 +624,88 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                       </option>
                     ))}
                   </select>
-                  <FiChevronDown className="w-5 h-5 text-gray-400 absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none group-hover:text-[var(--blue)] transition-colors" />
+                  <FiChevronDown
+                    size={18}
+                    color="#9ca3af"
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      pointerEvents: "none",
+                    }}
+                  />
                 </div>
               </div>
 
-              {/* Primary Search Button */}
-              <button className="bg-[var(--blue)] hover:bg-blue-700 text-white font-bold text-base md:text-lg px-9 py-3.5 md:py-4 rounded-full flex items-center justify-center gap-2.5 transition-all duration-300 shadow-md hover:shadow-xl flex-shrink-0 mr-1">
-                <FiSearch className="w-5 h-5 stroke-[2.5]" />
+              {/* Search button */}
+              <button
+                style={{
+                  background: "#1b5ebe",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 9999,
+                  padding: "14px 36px",
+                  fontFamily: "ThmanyahSans, sans-serif",
+                  fontWeight: 700,
+                  fontSize: 17,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  flexShrink: 0,
+                  marginRight: 4,
+                  boxShadow: "0 4px 16px rgba(27,94,190,0.35)",
+                }}
+              >
+                <FiSearch size={18} strokeWidth={2.5} />
                 <span>بحث</span>
               </button>
             </div>
 
-            {/* ── MOBILE single pill ── */}
+            {/* ── MOBILE pill ── */}
             <div className="flex md:hidden justify-center w-full px-4">
               <button
                 onClick={() => openStep("city")}
                 dir="rtl"
-                className="flex items-center gap-3 bg-white rounded-full px-4 py-3 w-full max-w-sm shadow-xl"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  background: "#fff",
+                  borderRadius: 9999,
+                  padding: "10px 14px",
+                  width: "100%",
+                  maxWidth: 360,
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+                  border: "none",
+                  cursor: "pointer",
+                }}
               >
-                {/* Blue circle search icon — LEFT side visually (start in LTR flex) */}
-                <span className="flex-shrink-0 w-9 h-9 rounded-full bg-[#1b5ebe] flex items-center justify-center ml-auto">
-                  <SearchIcon color="white" size={15} />
+                <span
+                  style={{
+                    flexShrink: 0,
+                    width: 36,
+                    height: 36,
+                    borderRadius: "50%",
+                    background: "#1b5ebe",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginLeft: "auto",
+                  }}
+                >
+                  <FiSearch size={15} color="#fff" strokeWidth={2.5} />
                 </span>
-                {/* Label — right side text */}
-                <span className="flex-1 text-right text-sm text-gray-400 truncate">
+                <span
+                  style={{
+                    flex: 1,
+                    textAlign: "right",
+                    fontSize: 14,
+                    color: "#9ca3af",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   {pillLabel()}
                 </span>
               </button>
@@ -287,71 +717,123 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
       {/* ══ MOBILE BOTTOM SHEET ══ */}
       {step && (
         <>
-          {/* Backdrop — semi-transparent, hero still visible above */}
           <div
-            className="fixed inset-0 z-[190] md:hidden"
-            style={{ background: "rgba(0,0,0,0.15)" }}
+            className="fixed inset-0 md:hidden"
+            style={{ background: "rgba(0,0,0,0.18)", zIndex: 190 }}
             onClick={closeSheet}
           />
-
-          {/* Sheet */}
           <div
-            className="fixed bottom-0 left-0 right-0 z-[200] md:hidden bg-white"
+            className="fixed bottom-0 left-0 right-0 md:hidden bg-white"
             style={{
               borderRadius: "24px 24px 0 0",
               maxHeight: "70vh",
               display: "flex",
               flexDirection: "column",
+              zIndex: 200,
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Handle bar */}
-            <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 rounded-full bg-gray-200" />
+            {/* Handle */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "12px 0 4px",
+              }}
+            >
+              <div
+                style={{
+                  width: 40,
+                  height: 4,
+                  borderRadius: 9999,
+                  background: "#e5e7eb",
+                }}
+              />
             </div>
 
             {/* Header */}
             <div
-              className="flex items-center justify-between px-5 pb-3 pt-2"
-              dir="rtl"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "8px 20px 12px",
+                direction: "rtl",
+              }}
             >
-              <p className="text-[17px] font-bold text-[#0e1f1a]">
+              <p style={{ fontSize: 17, fontWeight: 700, color: "#0e1f1a" }}>
                 {sheetTitle()}
               </p>
               <button
                 onClick={closeSheet}
-                className="text-gray-400 text-lg w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+                style={{
+                  background: "#f3f4f6",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: 32,
+                  height: 32,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                ✕
+                <FiX size={16} color="#6b7280" />
               </button>
             </div>
 
-            {/* Search input — only for city step */}
+            {/* City search input */}
             {step === "city" && (
-              <div className="px-4 pb-3" dir="rtl">
-                <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3">
-                  <SearchIcon color="#9ca3af" size={16} />
+              <div style={{ padding: "0 16px 12px", direction: "rtl" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    background: "#f9fafb",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 16,
+                    padding: "10px 14px",
+                  }}
+                >
+                  <FiSearch size={16} color="#9ca3af" />
                   <input
                     autoFocus
                     type="text"
                     placeholder="ابحث عن مدينة"
                     value={citySearch}
                     onChange={(e) => setCitySearch(e.target.value)}
-                    className="flex-1 bg-transparent outline-none text-sm text-right text-gray-700 placeholder-gray-400"
                     dir="rtl"
+                    style={{
+                      flex: 1,
+                      background: "transparent",
+                      border: "none",
+                      outline: "none",
+                      fontSize: 14,
+                      color: "#374151",
+                      textAlign: "right",
+                      fontFamily: "ThmanyahSans, sans-serif",
+                    }}
                   />
                 </div>
               </div>
             )}
 
-            {/* Items */}
-            <div className="flex-1 overflow-y-auto px-4 pb-2" dir="rtl">
+            {/* Items list */}
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                padding: "0 16px 8px",
+                direction: "rtl",
+              }}
+            >
               {(step === "city"
                 ? filteredCities
                 : step === "type"
                   ? PROP_TYPES
                   : PRICES
-              ).map((item) => (
+              ).map((item, i, arr) => (
                 <button
                   key={item}
                   onClick={() =>
@@ -361,7 +843,23 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                         ? pickType(item)
                         : pickPrice(item)
                   }
-                  className="w-full text-right px-2 py-4 text-[15px] text-[#0e1f1a] border-b border-gray-100 last:border-0 hover:text-[#1b5ebe] transition-colors block"
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "right",
+                    padding: "15px 8px",
+                    fontSize: 15,
+                    color: "#0e1f1a",
+                    borderBottom:
+                      i < arr.length - 1 ? "1px solid #f3f4f6" : "none",
+                    background: "none",
+                    border: i < arr.length - 1 ? "none" : "none",
+                    borderBottomWidth: i < arr.length - 1 ? 1 : 0,
+                    borderBottomStyle: "solid",
+                    borderBottomColor: "#f3f4f6",
+                    cursor: "pointer",
+                    fontFamily: "ThmanyahSans, sans-serif",
+                  }}
                 >
                   {item}
                 </button>
@@ -369,12 +867,27 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
             </div>
 
             {/* Bottom search button */}
-            <div className="px-4 pb-7 pt-3">
+            <div style={{ padding: "12px 16px 32px" }}>
               <button
                 onClick={closeSheet}
-                className="w-full bg-[#1b5ebe] text-white font-bold text-[16px] py-4 rounded-full flex items-center justify-center gap-2"
+                style={{
+                  width: "100%",
+                  background: "#1b5ebe",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 9999,
+                  padding: "15px 24px",
+                  fontFamily: "ThmanyahSans, sans-serif",
+                  fontWeight: 700,
+                  fontSize: 16,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                }}
               >
-                <SearchIcon color="white" size={17} />
+                <FiSearch size={17} strokeWidth={2.5} />
                 بحث
               </button>
             </div>
@@ -382,29 +895,5 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
         </>
       )}
     </>
-  );
-}
-
-function SearchIcon({
-  color = "currentColor",
-  size = 17,
-}: {
-  color?: string;
-  size?: number;
-}) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
   );
 }
