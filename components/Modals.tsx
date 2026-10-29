@@ -99,7 +99,7 @@ export default function Modal({ open, onClose, type }: ModalProps) {
 
   /* ── Field helpers ── */
   const fieldBase =
-    "w-full px-4 py-3 rounded-xl border bg-ivory text-primary text-[15px] outline-none transition-colors placeholder:text-muted/60";
+    "w-full px-4 py-3.5 rounded-xl border bg-[#f5f5f5] text-primary text-[15px] outline-none transition-colors placeholder:text-muted/60";
   const fieldNormal = `${fieldBase} border-border focus:border-blue`;
   const fieldError = `${fieldBase} border-red-400 bg-red-50 focus:border-red-500`;
 
@@ -109,37 +109,38 @@ export default function Modal({ open, onClose, type }: ModalProps) {
   return (
     <div
       onClick={handleClose}
-      className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-6"
+      className="fixed inset-0 z-[1000] flex items-end md:items-center justify-center p-0 md:p-6 transition-opacity"
       style={{ background: "rgba(14,31,26,0.6)", backdropFilter: "blur(4px)" }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         dir="rtl"
-        className="bg-white rounded-3xl w-full max-w-[480px] shadow-2xl flex flex-col"
-        style={{ maxHeight: "calc(100dvh - 48px)" }}
+        className="bg-white rounded-t-3xl md:rounded-3xl w-full max-w-full md:max-w-[480px] shadow-2xl flex flex-col transition-all duration-300 max-h-[88vh] md:max-h-[calc(100dvh-48px)] overflow-hidden"
       >
-        {/* ── Header (fixed inside modal) ── */}
-        <div className="flex items-center justify-between px-7 pt-7 pb-4 flex-shrink-0">
+        {/* ── Mobile Handle Bar ── */}
+        <div className="flex justify-center pt-3 pb-1 md:hidden flex-shrink-0">
+          <div className="w-10 h-1 rounded-full bg-gray-200" />
+        </div>
+
+        {/* ── Header (Fixed) ── */}
+        <div className="flex items-center justify-center px-6 md:px-7 pt-2 md:pt-7 pb-4 flex-shrink-0">
           <div>
-            <p className="text-xs font-bold text-blue tracking-widest mb-1">
-              {isPublish ? "نشر إعلان" : "طلب عقار"}
-            </p>
-            <h2 className="text-xl md:text-2xl font-black text-primary leading-snug">
+            <h2 className="text-xl text-center md:text-2xl font-black text-primary leading-snug">
               {isPublish
                 ? "أضف عقارك وسنتواصل معك"
                 : "أخبرنا عن العقار الذي تبحث عنه"}
             </h2>
           </div>
-          <button
+          {/* <button
             onClick={handleClose}
             className="flex-shrink-0 w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors mr-2"
           >
-            <FiX size={16} className="text-muted" />
-          </button>
+            <FiX size={18} className="text-muted" />
+          </button> */}
         </div>
 
-        {/* ── Scrollable body ── */}
-        <div className="overflow-y-auto flex-1 px-7 pb-2">
+        {/* ── Scrollable Body (Scrollbar Hidden on Mobile) ── */}
+        <div className="overflow-y-auto flex-1 px-6 md:px-7 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {submitted ? (
             /* ── Success ── */
             <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
@@ -154,14 +155,14 @@ export default function Modal({ open, onClose, type }: ModalProps) {
               </p>
               <button
                 onClick={handleClose}
-                className="mt-4 bg-blue text-white font-bold text-sm px-8 py-3 rounded-full hover:bg-blue/90 transition-colors"
+                className="mt-4 bg-blue text-white font-bold text-sm px-8 py-3.5 rounded-full hover:bg-blue/90 transition-colors"
               >
                 إغلاق
               </button>
             </div>
           ) : isPublish ? (
             /* ── Publish form ── */
-            <div className="flex flex-col gap-3 pb-4">
+            <div className="flex flex-col gap-3.5 pb-4">
               <div>
                 <select
                   value={pub.propType}
@@ -251,7 +252,7 @@ export default function Modal({ open, onClose, type }: ModalProps) {
             </div>
           ) : (
             /* ── Request form ── */
-            <div className="flex flex-col gap-3 pb-4">
+            <div className="flex flex-col gap-3.5 pb-4">
               <div>
                 <select
                   value={req.propType}
@@ -308,16 +309,16 @@ export default function Modal({ open, onClose, type }: ModalProps) {
           )}
         </div>
 
-        {/* ── Footer CTA (fixed at bottom) ── */}
+        {/* ── Footer CTA (Fixed at Bottom) ── */}
         {!submitted && (
-          <div className="px-7 pb-7 pt-3 flex-shrink-0">
+          <div className="px-6 md:px-7 pb-6 md:pb-7 pt-3 border-t border-gray-100 flex-shrink-0 bg-white">
             <button
               onClick={handleSubmit}
-              className="w-full bg-blue text-white font-bold text-base py-4 rounded-2xl hover:bg-blue/90 active:scale-[0.98] transition-all"
+              className="w-full bg-blue text-white font-bold text-base py-4 rounded-2xl hover:bg-blue/90 active:scale-[0.98] transition-all shadow-md"
             >
               {isPublish ? "إرسال الإعلان" : "إرسال الطلب"}
             </button>
-            <p className="text-center text-xs text-muted mt-3">
+            <p className="text-center text-xs text-muted mt-2.5">
               سيتواصل معك فريقنا في أقرب وقت ممكن
             </p>
           </div>

@@ -1,13 +1,12 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   FiChevronDown,
   FiSearch,
   FiX,
   FiMenu,
-  FiMapPin,
-  FiHome,
-  FiDollarSign,
+  FiChevronRight,
 } from "react-icons/fi";
 
 const NAV_LINKS = [
@@ -18,6 +17,7 @@ const NAV_LINKS = [
 ];
 
 const CITIES = [
+  "الكل",
   "طرابلس",
   "المينا",
   "الضم والفرز",
@@ -25,65 +25,109 @@ const CITIES = [
   "المعرض",
   "الكورة",
 ];
-const PROP_TYPES = ["شقة", "فيلا", "مكتب", "أرض", "محال تجارية", "عمارة"];
-const PRICES = [
-  "أقل من 50,000",
-  "50,000 – 150,000",
-  "150,000 – 300,000",
-  "أكثر من 300,000",
+
+const PROP_TYPES = [
+  "الكل",
+  "شقة",
+  "فيلا",
+  "مكتب",
+  "أرض",
+  "محال تجارية",
+  "عمارة",
 ];
 
-type Step = "city" | "type" | "price" | null;
+const PRICES = [
+  { label: "الكل", value: "" },
+  { label: "أقل من $50,000", value: "50000" },
+  { label: "50,000 – 150,000 $", value: "150000" },
+  { label: "150,000 – 300,000 $", value: "300000" },
+  { label: "أكثر من 300,000 $", value: "500000" },
+];
+
+type Step = 1 | 2 | 3 | null;
 
 export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
+  const router = useRouter();
   const [tab, setTab] = useState<"بيع" | "إيجار">("إيجار");
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Desktop search state
   const [city, setCity] = useState("");
   const [type, setType] = useState("");
   const [price, setPrice] = useState("");
 
+  // Mobile bottom sheet search state
   const [step, setStep] = useState<Step>(null);
   const [mobileCity, setMobileCity] = useState("");
   const [mobileType, setMobileType] = useState("");
   const [mobilePrice, setMobilePrice] = useState("");
-  const [citySearch, setCitySearch] = useState("");
-
-  const filteredCities = CITIES.filter((c) => c.includes(citySearch));
 
   const pillLabel = () => {
-    const parts = [mobileCity, mobileType, mobilePrice].filter(Boolean);
+    const selectedPriceLabel = PRICES.find(
+      (p) => p.value === mobilePrice,
+    )?.label;
+    const parts = [
+      mobileCity,
+      mobileType,
+      selectedPriceLabel && selectedPriceLabel !== "الكل"
+        ? selectedPriceLabel
+        : "",
+    ].filter(Boolean);
+
     return parts.length ? parts.join("، ") : "اختر المدينة، النوع، السعر";
   };
 
-  const openStep = (s: Step) => {
-    setCitySearch("");
-    setStep(s);
+  const openSheet = () => {
+    setStep(1);
   };
-  const closeSheet = () => setStep(null);
 
-  const pickCity = (v: string) => {
-    setMobileCity(v);
-    setCitySearch("");
-    setStep("type");
-  };
-  const pickType = (v: string) => {
-    setMobileType(v);
-    setStep("price");
-  };
-  const pickPrice = (v: string) => {
-    setMobilePrice(v);
+  const closeSheet = () => {
     setStep(null);
   };
 
-  const sheetTitle = () =>
-    step === "city"
-      ? "اختر المدينة"
-      : step === "type"
-        ? "نوع العقار"
-        : step === "price"
-          ? "نطاق السعر (USD)"
-          : "";
+  // Immediate selection & transitions (No keyboard triggering)
+  const pickCity = (v: string) => {
+    setMobileCity(v === "الكل" ? "" : v);
+    setStep(2); // الانتقال الفوري لنوع العقار
+  };
+
+  const pickType = (v: string) => {
+    setMobileType(v === "الكل" ? "" : v);
+    setStep(3); // الانتقال الفوري للسعر
+  };
+
+  const pickPrice = (v: string) => {
+    setMobilePrice(v);
+  };
+
+  // Search redirection to results page
+  const handleMobileSearch = () => {
+    const query = new URLSearchParams();
+    if (tab) query.set("type", tab === "بيع" ? "للبيع" : "للإيجار");
+    if (mobileCity) query.set("location", mobileCity);
+    if (mobileType) query.set("propType", mobileType);
+    if (mobilePrice) query.set("maxPrice", mobilePrice);
+
+    closeSheet();
+    router.push(`/search?${query.toString()}`);
+  };
+
+  const handleDesktopSearch = () => {
+    const query = new URLSearchParams();
+    if (tab) query.set("type", tab === "بيع" ? "للبيع" : "للإيجار");
+    if (city) query.set("location", city);
+    if (type) query.set("propType", type);
+    if (price) query.set("maxPrice", price);
+
+    router.push(`/search?${query.toString()}`);
+  };
+
+  const sheetTitle = () => {
+    if (step === 1) return "1. اختر المدينة / المنطقة";
+    if (step === 2) return "2. اختر نوع العقار";
+    if (step === 3) return "3. حدد الميزانية / السعر";
+    return "";
+  };
 
   return (
     <>
@@ -136,7 +180,7 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
         {/* ══ NAVBAR ══ */}
         <nav
           style={{
-            position: "absolute" /* floats over the hero on ALL screen sizes */,
+            position: "absolute",
             top: 0,
             left: 0,
             right: 0,
@@ -144,19 +188,7 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
             width: "100%",
           }}
         >
-          {/*
-           * Desktop:  fully transparent (sits on top of hero image)
-           * Mobile:   white background
-           */}
-          <div
-            className="md:bg-transparent"
-            style={
-              {
-                /* applied only on mobile via inline; Tailwind class overrides on md+ */
-              }
-            }
-          >
-            {/* Inner row — white bg on mobile only */}
+          <div className="md:bg-transparent">
             <div
               className="bg-white md:bg-transparent"
               style={{
@@ -212,6 +244,7 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
 
               {/* Desktop CTA */}
               <button
+                type="button"
                 onClick={onPublish}
                 className="hidden md:inline-flex"
                 style={{
@@ -231,8 +264,9 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                 نشر إعلان
               </button>
 
-              {/* Mobile hamburger — dark icon because bg is white */}
+              {/* Mobile hamburger */}
               <button
+                type="button"
                 className="flex md:hidden"
                 onClick={() => setMenuOpen((o) => !o)}
                 aria-label="فتح القائمة"
@@ -258,7 +292,7 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
               </button>
             </div>
 
-            {/* ── Mobile dropdown menu ── */}
+            {/* Mobile dropdown menu */}
             {menuOpen && (
               <div
                 className="md:hidden"
@@ -294,19 +328,11 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                       borderRadius: 12,
                       transition: "background 0.15s",
                     }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.background =
-                        "rgba(27,94,190,0.06)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.background = "transparent")
-                    }
                   >
                     {item.label}
                   </a>
                 ))}
 
-                {/* Divider */}
                 <div
                   style={{
                     height: 1,
@@ -316,6 +342,7 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                 />
 
                 <button
+                  type="button"
                   onClick={() => {
                     onPublish();
                     setMenuOpen(false);
@@ -404,6 +431,7 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
               >
                 {(["إيجار", "بيع"] as const).map((t) => (
                   <button
+                    type="button"
                     key={t}
                     onClick={() => setTab(t)}
                     style={{
@@ -481,7 +509,7 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                     }}
                   >
                     <option value="">اختر المدينة</option>
-                    {CITIES.map((c) => (
+                    {CITIES.filter((c) => c !== "الكل").map((c) => (
                       <option key={c} value={c}>
                         {c}
                       </option>
@@ -549,7 +577,7 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                     }}
                   >
                     <option value="">جميع الأنواع</option>
-                    {PROP_TYPES.map((p) => (
+                    {PROP_TYPES.filter((p) => p !== "الكل").map((p) => (
                       <option key={p} value={p}>
                         {p}
                       </option>
@@ -617,9 +645,9 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                     }}
                   >
                     <option value="">بلا تحديد</option>
-                    {PRICES.map((p) => (
-                      <option key={p} value={p}>
-                        {p}
+                    {PRICES.filter((p) => p.value !== "").map((p) => (
+                      <option key={p.value} value={p.value}>
+                        {p.label}
                       </option>
                     ))}
                   </select>
@@ -637,6 +665,8 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
 
               {/* Search button */}
               <button
+                type="button"
+                onClick={handleDesktopSearch}
                 style={{
                   background: "#1b5ebe",
                   color: "#fff",
@@ -663,7 +693,8 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
             {/* ── MOBILE pill ── */}
             <div className="flex md:hidden justify-center w-full px-4">
               <button
-                onClick={() => openStep("city")}
+                type="button"
+                onClick={openSheet}
                 dir="rtl"
                 style={{
                   display: "flex",
@@ -699,7 +730,12 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                     flex: 1,
                     textAlign: "right",
                     fontSize: 14,
-                    color: "#9ca3af",
+                    color:
+                      mobileCity || mobileType || mobilePrice
+                        ? "#111827"
+                        : "#9ca3af",
+                    fontWeight:
+                      mobileCity || mobileType || mobilePrice ? 600 : 400,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
@@ -718,21 +754,21 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
         <>
           <div
             className="fixed inset-0 md:hidden"
-            style={{ background: "rgba(0,0,0,0.18)", zIndex: 190 }}
+            style={{ background: "rgba(0,0,0,0.4)", zIndex: 190 }}
             onClick={closeSheet}
           />
           <div
             className="fixed bottom-0 left-0 right-0 md:hidden bg-white"
             style={{
               borderRadius: "24px 24px 0 0",
-              maxHeight: "70vh",
+              maxHeight: "80vh",
               display: "flex",
               flexDirection: "column",
               zIndex: 200,
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Handle */}
+            {/* Handle Bar */}
             <div
               style={{
                 display: "flex",
@@ -758,12 +794,32 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
                 justifyContent: "space-between",
                 padding: "8px 20px 12px",
                 direction: "rtl",
+                borderBottom: "1px solid #f3f4f6",
               }}
             >
-              <p style={{ fontSize: 17, fontWeight: 700, color: "#0e1f1a" }}>
-                {sheetTitle()}
-              </p>
+              <div className="flex items-center gap-2">
+                {step > 1 && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setStep((prev) => (prev ? prev - 1 : 1) as Step)
+                    }
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 4,
+                    }}
+                  >
+                    <FiChevronRight size={22} color="#374151" />
+                  </button>
+                )}
+                <p style={{ fontSize: 16, fontWeight: 700, color: "#0e1f1a" }}>
+                  {sheetTitle()}
+                </p>
+              </div>
               <button
+                type="button"
                 onClick={closeSheet}
                 style={{
                   background: "#f3f4f6",
@@ -781,115 +837,144 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
               </button>
             </div>
 
-            {/* City search input */}
-            {step === "city" && (
-              <div style={{ padding: "0 16px 12px", direction: "rtl" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    background: "#f9fafb",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 16,
-                    padding: "10px 14px",
-                  }}
-                >
-                  <FiSearch size={16} color="#9ca3af" />
-                  <input
-                    autoFocus
-                    type="text"
-                    placeholder="ابحث عن مدينة"
-                    value={citySearch}
-                    onChange={(e) => setCitySearch(e.target.value)}
-                    dir="rtl"
-                    style={{
-                      flex: 1,
-                      background: "transparent",
-                      border: "none",
-                      outline: "none",
-                      fontSize: 14,
-                      color: "#374151",
-                      textAlign: "right",
-                      fontFamily: "ThmanyahSans, sans-serif",
-                    }}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Items list */}
+            {/* Items list - NO KEYBOARD, Scrollbar Hidden, Highlight Selected Option */}
             <div
-              style={{
-                flex: 1,
-                overflowY: "auto",
-                padding: "0 16px 8px",
-                direction: "rtl",
-              }}
+              className="flex-1 overflow-y-auto p-4 space-y-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              style={{ direction: "rtl", maxHeight: "50vh" }}
             >
-              {(step === "city"
-                ? filteredCities
-                : step === "type"
-                  ? PROP_TYPES
-                  : PRICES
-              ).map((item, i, arr) => (
-                <button
-                  key={item}
-                  onClick={() =>
-                    step === "city"
-                      ? pickCity(item)
-                      : step === "type"
-                        ? pickType(item)
-                        : pickPrice(item)
-                  }
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    textAlign: "right",
-                    padding: "15px 8px",
-                    fontSize: 15,
-                    color: "#0e1f1a",
-                    borderBottom:
-                      i < arr.length - 1 ? "1px solid #f3f4f6" : "none",
-                    background: "none",
-                    border: i < arr.length - 1 ? "none" : "none",
-                    borderBottomWidth: i < arr.length - 1 ? 1 : 0,
-                    borderBottomStyle: "solid",
-                    borderBottomColor: "#f3f4f6",
-                    cursor: "pointer",
-                    fontFamily: "ThmanyahSans, sans-serif",
-                  }}
-                >
-                  {item}
-                </button>
-              ))}
+              {/* STEP 1: City */}
+              {step === 1 &&
+                CITIES.map((item) => {
+                  const isSelected =
+                    (item === "الكل" && !mobileCity) || mobileCity === item;
+                  return (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => pickCity(item)}
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        textAlign: "right",
+                        padding: "14px 16px",
+                        fontSize: 15,
+                        borderRadius: 12,
+                        cursor: "pointer",
+                        fontFamily: "ThmanyahSans, sans-serif",
+                        transition: "all 0.15s ease",
+                        background: isSelected ? "#1b5ebe" : "#f9fafb",
+                        color: isSelected ? "#ffffff" : "#1f2937",
+                        fontWeight: isSelected ? 700 : 500,
+                        border: isSelected
+                          ? "1px solid #1b5ebe"
+                          : "1px solid #e5e7eb",
+                      }}
+                    >
+                      {item}
+                    </button>
+                  );
+                })}
+
+              {/* STEP 2: Property Type */}
+              {step === 2 &&
+                PROP_TYPES.map((item) => {
+                  const isSelected =
+                    (item === "الكل" && !mobileType) || mobileType === item;
+                  return (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => pickType(item)}
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        textAlign: "right",
+                        padding: "14px 16px",
+                        fontSize: 15,
+                        borderRadius: 12,
+                        cursor: "pointer",
+                        fontFamily: "ThmanyahSans, sans-serif",
+                        transition: "all 0.15s ease",
+                        background: isSelected ? "#1b5ebe" : "#f9fafb",
+                        color: isSelected ? "#ffffff" : "#1f2937",
+                        fontWeight: isSelected ? 700 : 500,
+                        border: isSelected
+                          ? "1px solid #1b5ebe"
+                          : "1px solid #e5e7eb",
+                      }}
+                    >
+                      {item}
+                    </button>
+                  );
+                })}
+
+              {/* STEP 3: Price */}
+              {step === 3 &&
+                PRICES.map((item) => {
+                  const isSelected = mobilePrice === item.value;
+                  return (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => pickPrice(item.value)}
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        textAlign: "right",
+                        padding: "14px 16px",
+                        fontSize: 15,
+                        borderRadius: 12,
+                        cursor: "pointer",
+                        fontFamily: "ThmanyahSans, sans-serif",
+                        transition: "all 0.15s ease",
+                        background: isSelected ? "#1b5ebe" : "#f9fafb",
+                        color: isSelected ? "#ffffff" : "#1f2937",
+                        fontWeight: isSelected ? 700 : 500,
+                        border: isSelected
+                          ? "1px solid #1b5ebe"
+                          : "1px solid #e5e7eb",
+                      }}
+                    >
+                      {item.label}
+                    </button>
+                  );
+                })}
             </div>
 
-            {/* Bottom search button */}
-            <div style={{ padding: "12px 16px 32px" }}>
-              <button
-                onClick={closeSheet}
+            {/* Bottom Search Button - Show ONLY in Step 3 */}
+            {step === 3 && (
+              <div
                 style={{
-                  width: "100%",
-                  background: "#1b5ebe",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 9999,
-                  padding: "15px 24px",
-                  fontFamily: "ThmanyahSans, sans-serif",
-                  fontWeight: 700,
-                  fontSize: 16,
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
+                  padding: "12px 16px 28px",
+                  borderTop: "1px solid #f3f4f6",
                 }}
               >
-                <FiSearch size={17} strokeWidth={2.5} />
-                بحث
-              </button>
-            </div>
+                <button
+                  type="button"
+                  onClick={handleMobileSearch}
+                  style={{
+                    width: "100%",
+                    background: "#1b5ebe",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 14,
+                    padding: "14px 24px",
+                    fontFamily: "ThmanyahSans, sans-serif",
+                    fontWeight: 700,
+                    fontSize: 16,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    boxShadow: "0 4px 14px rgba(27,94,190,0.3)",
+                  }}
+                >
+                  <FiSearch size={18} strokeWidth={2.5} />
+                  عرض نتائج البحث
+                </button>
+              </div>
+            )}
           </div>
         </>
       )}
