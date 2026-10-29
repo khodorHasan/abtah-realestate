@@ -24,7 +24,7 @@ export default function Listings() {
           {properties.map((p) => (
             <Link
               key={p.id}
-              href={`/${p.slug}`}
+              href={`/${encodeURIComponent(p.slug)}`}
               className="group flex flex-col cursor-pointer no-underline"
             >
               {/* Image */}
@@ -99,7 +99,7 @@ export default function Listings() {
         </div>
 
         {/* Load More */}
-        <div className="text-center mt-20">
+        <div className="text-center mt-8 md:mt-12">
           <button className="bg-[#f5f5f5] text-gray-900 px-10 py-3.5 rounded-full font-medium text-base hover:bg-[#ebebeb] transition-colors duration-300">
             المزيد من العروض
           </button>
