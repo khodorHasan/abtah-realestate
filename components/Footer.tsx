@@ -11,25 +11,24 @@ import { BsTelephone } from "react-icons/bs";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#f5f5f5] text-gray-800 font-sans border-t border-gray-200">
+    <footer className="bg-[#f5f5f5] text-gray-800 border-t border-gray-200">
       {/* Main Footer Container */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-14 pb-10">
         {/* 4-Column Responsive Grid (RTL Flow) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-8 items-start mb-12">
           {/* Column 1: Brand & Logo Block (Rightmost in RTL) */}
           <div className="flex flex-col items-start">
-            <div className="flex flex-col md:flex-row items-center justify-center md:gap-1">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-1">
               <img
                 src="/logo-abtah.svg"
                 alt="Logo"
                 className="w-12 md:w-14 mt-1 md:mt-0"
               />
-              <div>
-                <p className="footer-logo-text mt-[2px] md:mt-0 mb-[1px]">
-                  الأبطــــــح للعقـارات
-                </p>
-                <p className="footer-logo-sub">Abtah Real Estate</p>
-              </div>
+              <img
+                src="/blue-typo-logo.svg"
+                alt="الأبطح للعقارات"
+                className="h-7 md:h-9 object-contain"
+              />
             </div>
             <p className="text-sm text-gray-600 font-regular leading-relaxed max-w-xs mt-2">
               حلول عقارية متكاملة بخبرة عالية لمساعدتك في الحصول على العقار
@@ -87,10 +86,10 @@ export default function Footer() {
               <li className="flex items-center gap-3">
                 <BsTelephone className="w-4 h-4 text-gray-700 flex-shrink-0" />
                 <a
-                  href="tel:0532535848"
+                  href="tel:+96181270436"
                   className="hover:text-[var(--blue)] transition-colors dir-ltr"
                 >
-                  0532535848
+                  81270436
                 </a>
               </li>
               <li className="flex items-center gap-3">
@@ -101,22 +100,22 @@ export default function Footer() {
                   rel="noreferrer"
                   className="hover:text-[var(--blue)] transition-colors dir-ltr"
                 >
-                  0532535848
+                  81270436
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <FiMail className="w-4 h-4 text-gray-700 flex-shrink-0" />
                 <a
-                  href="mailto:anan.alrtad20@gmail.com"
+                  href="mailto:alabtah.realestate@gmail.com"
                   className="hover:text-[var(--blue)] transition-colors dir-ltr"
                 >
-                  anan.alrtad20@gmail.com
+                  alabtah.realestate@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <FiMapPin className="w-4 h-4 text-gray-700 flex-shrink-0 mt-1" />
                 <span className="leading-relaxed">
-                  الرياض - الدار البيضاء - طريق عرفات
+                  لبنان - طرابلس خاصة والشمال عامّةً
                 </span>
               </li>
             </ul>
@@ -129,7 +128,7 @@ export default function Footer() {
           <div className="flex items-center gap-3">
             {/* Social Icons Pills */}
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/al_abtah.real.estate/"
               target="_blank"
               rel="noreferrer"
               aria-label="Instagram"

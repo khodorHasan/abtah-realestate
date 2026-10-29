@@ -26,11 +26,12 @@ export default function ActionCards({
     <section className="py-24 px-6 md:px-12 bg-[#f5f5f5]">
       <div className="max-w-6xl mx-auto">
         {/* Section Header (Right Aligned in RTL) */}
-        <div className="mb-20 text-center">
-          <span className="block text-sm md:text-base text-gray-500 mb-1">
+
+        <div className="text-center md:mb-8 md:mb-16 flex flex-col items-center">
+          <span className="text-sm md:text-base font-bold text-[var(--blue)] mb-2 tracking-wide">
             خدماتنا العقارية
           </span>
-          <h2 className="text-3xl md:text-3xl lg:text-3xl font-bold text-gray-900">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
             كيف نستطيع مساعدتك؟
           </h2>
         </div>

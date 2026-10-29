@@ -1,48 +1,51 @@
+import React from "react";
+
 const stats = [
-  { value: "+500", label: "عميل راضٍ" },
-  { value: "+100", label: "عقار مباع ومؤجر" },
-  { value: "+10", label: "سنوات خبرة" },
-  { value: "100%", label: "التزام وشفافية" },
+  { value: "+10", label: "عقارات متوفرة اليوم" },
+  { value: "+20", label: "عقار مباع ومؤجر" },
+  { value: "+200K", label: "نعرض العقار لأكثر من 200 ألف شخص" },
 ];
 
 export default function About() {
   return (
-    <section id="about" style={{ padding: "80px 24px", background: "#FAF8F5" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
-        {/* Text */}
-        <div>
-          <div style={{ display: "inline-block", background: "rgba(197,162,101,0.12)", color: "#C5A265", borderRadius: 6, padding: "4px 14px", fontSize: 13, fontWeight: 600, marginBottom: 20 }}>
-            من نحن
-          </div>
-          <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 800, color: "#0E1F1A", marginBottom: 20, lineHeight: 1.4 }}>
-            نعرف السوق العقاري في طرابلس أكثر من غيرنا
-          </h2>
-          <p style={{ color: "#5A6561", fontSize: 16, lineHeight: 1.9, marginBottom: 32 }}>
-            نحن وكالة <strong style={{ color: "#0E1F1A" }}>الأبطح للعقارات</strong> المتخصصة في تقديم حلول عقارية شاملة للأفراد والمستثمرين في طرابلس وشمال لبنان. نضمن لعملائنا الشفافية المطلقة، السرعة في التنفيذ، والخبرة المحلية العميقة لحماية وتنمية استثماراتهم العقارية.
-          </p>
-          <div style={{ borderRight: "4px solid #C5A265", paddingRight: 20 }}>
-            <p style={{ color: "#0E1F1A", fontStyle: "italic", fontWeight: 600, fontSize: 18 }}>
-              "عقارك.. أولوية اهتمامنا"
-            </p>
-          </div>
-        </div>
+    <section id="about" className="py-24 px-6 md:px-12 bg-[#FFFFFF]">
+      <div className="max-w-4xl mx-auto text-center">
+        {/* Label */}
+        <p className="text-sm md:text-base font-bold text-[var(--blue)] mb-3 tracking-wide">
+          من نحن
+        </p>
 
-        {/* Stats Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        {/* Title */}
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+          من نحن؟ نعرف السوق أكثر من السوق نفسه
+        </h2>
+
+        {/* Paragraph */}
+        <p className="text-gray-500 text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-16">
+          نحن وكالة <strong className="text-gray-900">الأبطح للعقارات</strong>{" "}
+          المتخصصة في تقديم حلول عقارية شاملة للأفراد والمستثمرين في طرابلس
+          وشمال لبنان. نساعد عملاءنا في الشراء والبيع والتأجير وإدارة العقارات
+          من خلال خدمات احترافية تتميز بالشفافية والموثوقية وفهم احتياجات كل
+          عميل.
+        </p>
+
+        {/* Stats — 3 columns with vertical dividers */}
+        <div className="flex items-start justify-center divide-x divide-x-reverse divide-gray-200">
           {stats.map((s, i) => (
-            <div key={i} style={{
-              background: i % 2 === 0 ? "#0E1F1A" : "#fff",
-              borderRadius: 14, padding: 28, textAlign: "center",
-              border: i % 2 !== 0 ? "2px solid #ede9e1" : "none"
-            }}>
-              <div style={{ fontSize: "2.4rem", fontWeight: 900, color: "#C5A265", marginBottom: 8 }}>{s.value}</div>
-              <div style={{ fontSize: 14, color: i % 2 === 0 ? "#8BA89E" : "#5A6561", fontWeight: 500 }}>{s.label}</div>
+            <div
+              key={i}
+              className="flex-1 flex flex-col items-center px-6 md:px-12"
+            >
+              <span className="text-4xl md:text-5xl font-black text-gray-900 mb-2">
+                {s.value}
+              </span>
+              <span className="text-sm md:text-base text-gray-600">
+                {s.label}
+              </span>
             </div>
           ))}
         </div>
       </div>
-
-      <style>{`@media (max-width: 768px) { #about > div { grid-template-columns: 1fr !important; } }`}</style>
     </section>
   );
 }

@@ -12,7 +12,6 @@ import {
 
 const NAV_LINKS = [
   { label: "من نحن", id: "about" },
-  { label: "تواصل معنا", id: "contact" },
   { label: "خدماتنا", id: "services" },
   { label: "أبرز العروض", id: "listings" },
   { label: "الرئيسية", id: "hero" },
@@ -172,7 +171,7 @@ export default function HeroWithNav({ onPublish }: { onPublish: () => void }) {
               }}
             >
               {/* Logo */}
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div className="flex flex-col md:flex-row items-center justify-center gap-1">
                 <img
                   src="/logo-abtah.svg"
                   alt="Logo"
