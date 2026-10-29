@@ -144,16 +144,11 @@ export default function PropertyDetail({
               alt="Logo"
               style={{ width: 44, height: "auto" }}
             />
-            <img
-              src="/typo-logo.svg"
-              alt="الأبطح للعقارات"
-              className="hidden md:block object-contain"
-              style={{ height: 28 }}
-            />
+
             <img
               src="/blue-typo-logo.svg"
               alt="الأبطح للعقارات"
-              className="block md:hidden object-contain"
+              className="object-contain"
               style={{ height: 28 }}
             />
           </div>
@@ -395,7 +390,7 @@ export default function PropertyDetail({
             </a>
 
             <a
-              href="tel:0532535848"
+              href="tel:+96181270436"
               className="flex items-center justify-center gap-2.5 w-full bg-[#f5f5f5] text-[#0e1f1a] rounded-[14px] py-3.5 text-base font-semibold no-underline"
             >
               <FiPhone size={18} />

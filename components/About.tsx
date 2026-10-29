@@ -3,7 +3,7 @@ import React from "react";
 const stats = [
   { value: "+10", label: "عقارات متوفرة اليوم" },
   { value: "+20", label: "عقار مباع ومؤجر" },
-  { value: "+200K", label: "نعرض العقار لأكثر من 200 ألف شخص" },
+  { value: "200K+", label: "نعرض العقار لأكثر من 200 ألف شخص" },
 ];
 
 export default function About() {
@@ -16,7 +16,7 @@ export default function About() {
         </p>
 
         {/* Title */}
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-snug">
           من نحن؟ نعرف السوق أكثر من السوق نفسه
         </h2>
 
@@ -29,17 +29,20 @@ export default function About() {
           عميل.
         </p>
 
-        {/* Stats — 3 columns with vertical dividers */}
-        <div className="flex items-start justify-center divide-x divide-x-reverse divide-gray-200">
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-0 border-t border-gray-100 pt-10">
           {stats.map((s, i) => (
             <div
               key={i}
-              className="flex-1 flex flex-col items-center px-6 md:px-12"
+              className={`flex flex-col items-center px-3 md:px-10 ${
+                i < stats.length - 1 ? "border-l border-gray-200" : ""
+              }`}
+              style={{ borderLeftStyle: "solid" }}
             >
-              <span className="text-4xl md:text-5xl font-black text-gray-900 mb-2">
+              <span className="text-2xl md:text-3xl font-black text-gray-900 mb-2 leading-none">
                 {s.value}
               </span>
-              <span className="text-sm md:text-base text-gray-600">
+              <span className="text-xs md:text-base text-gray-500 leading-snug text-center">
                 {s.label}
               </span>
             </div>

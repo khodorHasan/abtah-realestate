@@ -4,15 +4,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#0E1F1A",
-        gold: "#C5A265",
-        ivory: "#FAF8F5",
-        muted: "#5A6561",
+        primary: "#0e1f1a",
+        blue: "#1b5ebe",
+        gold: "#c5a265",
+        ivory: "#faf8f5",
+        muted: "#5a6561",
+        border: "#e8e4dc",
       },
       fontFamily: {
-        arabic: ["Cairo", "sans-serif"],
+        sans: ["ThmanyahSans", "sans-serif"],
       },
     },
   },
   plugins: [],
-}
+};

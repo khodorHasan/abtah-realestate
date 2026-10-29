@@ -52,12 +52,12 @@ export default function Services() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-gray-900 text-xl lg:text-[26px] font-medium mb-3 leading-tight">
+                <h3 className="text-gray-900 text-lg lg:text-[23px] font-medium mb-3 leading-tight">
                   {s.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-gray-600 text-base leading-relaxed mb-6 max-w-md font-regular">
+                <p className="text-gray-700 text-sm leading-relaxed mb-6 max-w-md font-regular">
                   {s.desc}
                 </p>
               </div>
